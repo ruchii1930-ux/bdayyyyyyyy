@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Happy Birthday, Sammy (◔◡◔)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel+Decorative:wght@400;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --black:    #0a0608;
+  --deep:     #110a0d;
+  --card-bg:  #160c10;
+  --red:      #c0152a;
+  --red-glow: #e01a32;
+  --rose:     #e8618c;
+  --rose-lt:  #f49db8;
+  --gold:     #c9a96e;
+  --white:    #f5e8ec;
+  --muted:    #9a7a84;
+  --border:   rgba(232,97,140,0.18);
+}
+
+html{scroll-behavior:smooth}
+body{
+  font-family:'Montserrat',sans-serif;
+  background:var(--black);
+  color:var(--white);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--rose);border-radius:50%;
+  pointer-events:none;z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:transform .12s ease,opacity .2s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:36px;height:36px;
+  border:1.5px solid rgba(232,97,140,0.5);
+  border-radius:50%;pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:transform .22s ease,width .2s,height .2s;
+}
+
+/* ── CANVAS PARTICLES ── */
+#bg-canvas{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  pointer-events:none;z-index:0;
+  opacity:.7;
+}
+
+/* ── PAGES ── */
+.page{
+  position:fixed;top:0;left:0;
+  width:100%;height:100%;
+  overflow-y:auto;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .8s cubic-bezier(.4,0,.2,1),transform .8s cubic-bezier(.4,0,.2,1);
+  transform:translateY(30px);
+  z-index:1;
+}
+.page.active{
+  opacity:1;pointer-events:all;transform:translateY(0);
+}
+.page.exit{
+  opacity:0;transform:translateY(-30px);pointer-events:none;
+}
+
+/* ── NAV DOTS ── */
+.nav-dots{
+  position:fixed;right:28px;top:50%;
+  transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:14px;
+  z-index:100;
+}
+.dot{
+  width:10px;height:10px;border-radius:50%;
+  border:1.5px solid var(--rose);
+  background:transparent;cursor:none;
+  transition:background .3s,transform .3s,box-shadow .3s;
+}
+.dot.active{
+  background:var(--rose);
+  box-shadow:0 0 10px var(--rose);
+  transform:scale(1.4);
+}
+.dot:hover{transform:scale(1.3);}
+
+/* ── PAGE INDICATOR ── */
+.page-label{
+  position:fixed;right:48px;top:50%;
+  transform:translateY(-50%) rotate(90deg);
+  font-size:.6rem;letter-spacing:.2em;
+  color:var(--muted);text-transform:uppercase;
+  z-index:100;transition:color .3s;
+  pointer-events:none;
+}
+
+/* ── SCROLL NAV ARROWS ── */
+.nav-arrow{
+  position:fixed;bottom:36px;left:50%;
+  transform:translateX(-50%);
+  z-index:100;
+  background:none;border:none;
+  cursor:none;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  opacity:.7;transition:opacity .3s;
+}
+.nav-arrow:hover{opacity:1;}
+.nav-arrow span{
+  display:block;width:20px;height:20px;
+  border-right:2px solid var(--rose);
+  border-bottom:2px solid var(--rose);
+  transform:rotate(45deg);
+  animation:arrowBounce 1.6s ease-in-out infinite;
+}
+.nav-arrow span:nth-child(2){animation-delay:.2s;opacity:.6;}
+@keyframes arrowBounce{0%,100%{transform:rotate(45deg) translate(0,0)}50%{transform:rotate(45deg) translate(4px,4px)}}
+
+/* ════════════════════════════
+   PAGE 1 — WELCOME
+════════════════════════════ */
+#page1{
+  background:
+    radial-gradient(ellipse at 15% 20%, rgba(192,21,42,0.25) 0%,transparent 55%),
+    radial-gradient(ellipse at 85% 80%, rgba(232,97,140,0.18) 0%,transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(17,10,13,0) 0%,transparent 100%),
+    var(--black);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  min-height:100vh;text-align:center;
+  padding:40px 24px;
+}
+
+.p1-eyebrow{
+  font-family:'Montserrat',sans-serif;
+  font-size:.7rem;letter-spacing:.35em;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:28px;
+  animation:fadeUp 1s .2s both;
+}
+
+.p1-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(2.4rem,7vw,5.5rem);
+  font-weight:700;
+  background:linear-gradient(135deg, var(--white) 0%, var(--rose-lt) 40%, var(--rose) 70%, var(--red) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.15;
+  margin-bottom:12px;
+  animation:fadeUp 1s .35s both;
+  filter:drop-shadow(0 0 30px rgba(232,97,140,0.3));
+}
+
+.p1-subtitle{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(1.1rem,3vw,1.6rem);
+  font-style:italic;
+  color:var(--rose-lt);
+  margin-bottom:48px;
+  animation:fadeUp 1s .5s both;
+  letter-spacing:.04em;
+}
+
+/* Rose divider */
+.rose-divider{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:48px;
+  animation:fadeUp 1s .6s both;
+}
+.rose-divider .line{
+  width:80px;height:1px;
+  background:linear-gradient(90deg,transparent,var(--rose),transparent);
+}
+.rose-divider .icon{font-size:1.4rem;}
+
+.p1-date{
+  font-size:.75rem;letter-spacing:.22em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:60px;
+  animation:fadeUp 1s .7s both;
+}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 40px;
+  border:1.5px solid var(--rose);
+  background:linear-gradient(135deg,rgba(192,21,42,0.2),rgba(232,97,140,0.1));
+  color:var(--rose-lt);
+  font-family:'Montserrat',sans-serif;
+  font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
+  cursor:none;
+  border-radius:2px;
+  transition:all .35s ease;
+  position:relative;overflow:hidden;
+  animation:fadeUp 1s .85s both;
+  backdrop-filter:blur(8px);
+}
+.btn-primary::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,var(--red),var(--rose));
+  opacity:0;transition:opacity .35s;
+}
+.btn-primary:hover::before{opacity:1;}
+.btn-primary:hover{color:var(--white);box-shadow:0 0 30px rgba(192,21,42,0.5);transform:translateY(-2px);}
+.btn-primary span{position:relative;z-index:1;}
+
+/* floating roses p1 */
+.float-roses{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;
+}
+.fr{
+  position:absolute;font-size:1.2rem;
+  animation:floatRose linear infinite;
+  opacity:0;
+}
+@keyframes floatRose{
+  0%{transform:translateY(110vh) rotate(0deg);opacity:0}
+  10%{opacity:.6}
+  90%{opacity:.4}
+  100%{transform:translateY(-10vh) rotate(360deg);opacity:0}
+}
+
+/* ════════════════════════════
+   PAGE 2 — LETTER & PHOTO
+════════════════════════════ */
+#page2{
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(192,21,42,0.2) 0%,transparent 50%),
+    radial-gradient(ellipse at 10% 90%, rgba(232,97,140,0.15) 0%,transparent 50%),
+    var(--deep);
+  min-height:100vh;
+  padding:80px 24px 120px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+.p2-inner{
+  max-width:1000px;width:100%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:48px;
+  align-items:start;
+}
+
+/* Photo side */
+.photo-col{
+  display:flex;flex-direction:column;align-items:center;gap:20px;
+  margin-top:60px;
+}
+
+.photo-wrap{
+  position:relative;
+  animation:fadeUp .9s .2s both;
+}
+.photo-frame{
+  width:280px;height:340px;
+  background:linear-gradient(135deg,var(--red),var(--rose),var(--red));
+  padding:2px;
+  border-radius:4px;
+  box-shadow:
+    0 0 0 1px rgba(232,97,140,0.3),
+    0 24px 60px rgba(0,0,0,.7),
+    0 0 80px rgba(192,21,42,0.2);
+  cursor:none;
+  position:relative;
+}
+.photo-inner{
+  width:100%;height:100%;
+  border-radius:3px;
+  background:linear-gradient(135deg,#1a0810,#0d050a);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  overflow:hidden;
+  transition:transform .3s;
+}
+.photo-frame:hover .photo-inner{transform:scale(1.01);}
+.photo-inner img{width:100%;height:100%;object-fit:cover;display:none;}
+.photo-placeholder{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  color:var(--muted);
+}
+.photo-placeholder .ph-icon{font-size:2.4rem;}
+.photo-placeholder .ph-label{
+  font-size:.65rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--muted);font-family:'Montserrat',sans-serif;
+}
+input[type=file]{display:none;}
+
+/* corner ornaments */
+.corner.tl{top:-4px;left:-4px;border-width:2px 0 0 2px;}
+.corner.tr{top:-4px;right:-4px;border-width:2px 2px 0 0;}
+.corner.bl{bottom:-4px;left:-4px;border-width:0 0 2px 2px;}
+.corner.br{bottom:-4px;right:-4px;border-width:0 2px 2px 0;}
+
+.photo-caption{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:.95rem;
+  color:var(--muted);letter-spacing:.06em;
+  text-align:center;
+}
+
+/* Letter side */
+.letter-col{
+  animation:fadeUp .9s .35s both;
+  margin-top:60px;
+}
+
+.letter-card{
+  background:linear-gradient(145deg,rgba(22,12,16,.95),rgba(10,6,8,.98));
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:44px 40px;
+  position:relative;
+  box-shadow:0 24px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(232,97,140,0.08);
+}
+.letter-card::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--rose),transparent);
+}
+
+.letter-eyebrow{
+  font-size:.62rem;letter-spacing:.28em;
+  color:var(--gold);text-transform:uppercase;
+  margin-bottom:20px;
+  display:flex;align-items:center;gap:10px;
+}
+.letter-eyebrow::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+
+.letter-heading{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2rem;font-weight:300;
+  color:var(--white);
+  margin-bottom:24px;
+  line-height:1.2;
+}
+.letter-heading em{
+  font-style:italic;
+  background:linear-gradient(90deg,var(--rose),var(--red));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+.letter-body{
+  font-size:.88rem;line-height:2;
+  color:#c9a8b2;font-weight:300;
+  margin-bottom:30px;
+}
+.letter-body strong{
+  color:var(--rose-lt);font-weight:600;
+}
+
+.letter-sign{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.1rem;
+  color:var(--rose);
+  border-top:1px solid var(--border);
+  padding-top:20px;
+}
+
+/* ════════════════════════════
+   PAGE 3 — WISHES & GALLERY
+════════════════════════════ */
+#page3{
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(192,21,42,0.3) 0%,transparent 50%),
+    radial-gradient(ellipse at 20% 100%, rgba(232,97,140,0.15) 0%,transparent 50%),
+    var(--black);
+  min-height:100vh;
+  padding:80px 24px 100px;
+}
+
+.p3-header{
+  text-align:center;
+  margin-bottom:64px;
+  animation:fadeUp .9s .1s both;
+}
+
+.p3-eyebrow{
+  font-size:.65rem;letter-spacing:.3em;
+  color:var(--gold);text-transform:uppercase;margin-bottom:16px;
+}
+
+.p3-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(1.6rem,4vw,3rem);
+  background:linear-gradient(135deg,var(--white),var(--rose-lt),var(--rose));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:16px;
+}
+
+.p3-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1rem;
+  color:var(--muted);
+}
+
+/* Wishes grid */
+.wishes-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:20px;
+  max-width:900px;margin:0 auto 72px;
+}
+
+.wish-card{
+  background:linear-gradient(145deg,rgba(22,12,16,.9),rgba(16,8,12,.95));
+  border:1px solid var(--border);
+  border-radius:4px;
+  padding:32px 24px;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+  transition:transform .3s ease,box-shadow .3s ease,border-color .3s;
+  animation:fadeUp .7s both;
+}
+.wish-card::before{
+  content:'';position:absolute;
+  inset:0;
+  background:linear-gradient(135deg,var(--red),var(--rose));
+  opacity:0;transition:opacity .35s;
+}
+.wish-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 40px rgba(0,0,0,.5),0 0 30px rgba(192,21,42,0.2);
+  border-color:rgba(232,97,140,0.4);
+}
+.wish-card:hover::before{opacity:.06;}
+.wish-card:hover .wish-icon{transform:scale(1.15) rotate(-5deg);}
+
+.wish-icon{
+  font-size:2rem;margin-bottom:14px;display:block;
+  transition:transform .3s;
+}
+.wish-label{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.1rem;color:var(--rose-lt);
+  margin-bottom:8px;font-weight:400;
+}
+.wish-desc{
+  font-size:.75rem;color:var(--muted);
+  font-weight:300;line-height:1.7;letter-spacing:.03em;
+}
+.wish-card:nth-child(1){animation-delay:.15s}
+.wish-card:nth-child(2){animation-delay:.25s}
+.wish-card:nth-child(3){animation-delay:.35s}
+.wish-card:nth-child(4){animation-delay:.45s}
+.wish-card:nth-child(5){animation-delay:.55s}
+.wish-card:nth-child(6){animation-delay:.65s}
+
+/* Final message */
+.final-message{
+  max-width:640px;margin:0 auto;text-align:center;
+  animation:fadeUp .9s .7s both;
+  padding:48px 40px;
+  background:linear-gradient(145deg,rgba(22,12,16,.85),rgba(10,6,8,.9));
+  border:1px solid var(--border);
+  border-radius:4px;
+  position:relative;
+}
+.final-message::before{
+  content:'';position:absolute;
+  top:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--rose),transparent);
+}
+.final-message::after{
+  content:'';position:absolute;
+  bottom:0;left:10%;right:10%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--red),transparent);
+}
+
+.final-rose{font-size:2.8rem;display:block;margin-bottom:20px;}
+.final-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem;font-style:italic;
+  color:var(--rose-lt);
+  line-height:1.7;margin-bottom:24px;
+}
+.final-from{
+  font-size:.7rem;letter-spacing:.22em;
+  color:var(--muted);text-transform:uppercase;
+}
+
+/* Back to top */
+.back-btn{
+  display:flex;align-items:center;justify-content:center;
+  margin:48px auto 0;
+  background:none;border:1.5px solid rgba(232,97,140,0.3);
+  color:var(--muted);
+  font-family:'Montserrat',sans-serif;
+  font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  padding:12px 30px;border-radius:2px;
+  cursor:none;transition:all .3s;
+  width:fit-content;
+}
+.back-btn:hover{
+  color:var(--rose);border-color:var(--rose);
+  box-shadow:0 0 20px rgba(232,97,140,0.2);
+}
+
+/* ── SHARED ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ── RESPONSIVE ── */
+@media(max-width:700px){
+  .p2-inner{grid-template-columns:1fr;gap:36px;}
+  .photo-frame{width:220px;height:270px;}
+  .letter-card{padding:32px 24px;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- NAV DOTS -->
+<div class="nav-dots">
+  <div class="dot active" onclick="goTo(0)" title="Welcome"></div>
+  <div class="dot"        onclick="goTo(1)" title="Letter"></div>
+  <div class="dot"        onclick="goTo(2)" title="Wishes"></div>
+</div>
+<div class="page-label" id="page-label">01 / 03</div>
+
+<!-- ══════ PAGE 1 ══════ -->
+<div class="page active" id="page1">
+  <div class="float-roses" id="float-roses"></div>
+
+  <div class="p1-eyebrow">✦ A Special Day ✦</div>
+
+  <h1 class="p1-title">Happy<br/>Birthday</h1>
+  <p class="p1-subtitle">to my dearest Sister</p>
+
+  <div class="rose-divider">
+    <div class="line"></div>
+    <span class="icon">❤️</span>
+    <div class="line"></div>
+  </div>
+
+  <div class="p1-date">March 29 &nbsp;·&nbsp; A day the world got luckier</div>
+
+  <button class="btn-primary" onclick="goTo(1)">
+    <span>Open Your Letter</span>
+    <span>✦</span>
+  </button>
+</div>
+
+<!-- ══════ PAGE 2 ══════ -->
+<div class="page" id="page2">
+  <div class="p2-inner">
+
+    <!-- Photo -->
+    <div class="photo-col">
+      <div class="photo-wrap">
+        <div class="photo-frame" onclick="document.getElementById('photo-input').click()" title="Add her photo">
+          <div class="corner tl"></div>
+          <div class="corner tr"></div>
+          <div class="corner bl"></div>
+          <div class="corner br"></div>
+          <div class="photo-inner" id="photo-inner">
+            <div class="photo-placeholder" id="photo-placeholder" style="display:none;">
+              <span class="ph-icon">🌹</span>
+              <span class="ph-label">Add Her Photo</span>
+            </div>
+            <img id="photo-img" alt="Sister" src="sam.jpg" style="display:block;"/>
+          </div>
+        </div>
+        <input type="file" id="photo-input" accept="image/*"/>
+      </div>
+      <p class="photo-caption">The most beautiful soul I know</p>
+
+      <button class="btn-primary" onclick="goTo(2)" style="margin-top:12px">
+        <span>My Wishes for You</span>
+        <span>→</span>
+      </button>
+    </div>
+
+    <!-- Letter -->
+    <div class="letter-col">
+      <div class="letter-card">
+        <div class="letter-eyebrow">A letter from the heart</div>
+        <h2 class="letter-heading">For you, Sam  —<br/><em>always & forever.</em></h2>
+        <div class="letter-body">
+          <p>There are days that belong entirely to certain people — and today, without question, belongs to <strong>you</strong>.</p><br/>
+          <p>You are one of those rare souls who makes every room warmer just by walking in. Your strength is my quiet inspiration, and your love — <strong>unconditional, unwavering, and beautiful</strong> — is one of the greatest gifts I have ever known.</p><br/>
+          <p>On this day, I want you to feel every bit as <strong>extraordinary, radiant, and deeply loved</strong> as you truly are. You deserve roses and starlight and all the gentle, wonderful things.</p><br/>
+          <p>No matter where life carries us, I will always be your loudest cheerleader, your safe place, and your person.</p>
+        </div>
+        <div class="letter-sign">
+          With love that has no end ...<br/>
+          <span style="color:var(--rose-lt);font-size:1.3rem;"></span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════ PAGE 3 ══════ -->
+<div class="page" id="page3">
+
+  <div class="p3-header">
+    <div class="p3-eyebrow">✦ Crafted with love ✦</div>
+    <h2 class="p3-title">My Wishes for You</h2>
+    <p class="p3-sub">From the deepest part of my heart, you are truly a diamond 💎</p>
+  </div>
+
+  <div class="final-message">
+    <span class="final-rose">💌</span>
+    <p class="final-quote">"Like stars that dance in midnight skies,<br/>your light makes ordinary moments extraordinary."</p>
+    <p class="final-from">Happy Birthday, Sam &nbsp;·&nbsp; With all my love</p>
+  </div>
+
+  <button class="back-btn" onclick="goTo(0)">↑ &nbsp; Back to the Beginning</button>
+
+</div>
+
+<button class="nav-arrow" id="nav-arrow" onclick="nextPage()">
+  <span></span>
+  <span></span>
+</button>
+
+<script>
+/* ── CURSOR ── */
+const cursor = document.getElementById('cursor');
+const ring   = document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+});
+(function animRing(){
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animRing);
+})();
+
+/* ── PAGES ── */
+const pages  = document.querySelectorAll('.page');
+const dots   = document.querySelectorAll('.dot');
+const labels = ['01 / 03','02 / 03','03 / 03'];
+const pageLabel = document.getElementById('page-label');
+const navArrow  = document.getElementById('nav-arrow');
+let current = 0;
+
+function goTo(idx){
+  if(idx===current) return;
+  pages[current].classList.remove('active');
+  pages[current].classList.add('exit');
+  setTimeout(()=>pages[current].classList.remove('exit'),800);
+  dots[current].classList.remove('active');
+  current=idx;
+  pages[current].classList.add('active');
+  dots[current].classList.add('active');
+  pageLabel.textContent=labels[current];
+  navArrow.style.opacity = current===pages.length-1 ? '0' : '0.7';
+}
+
+function nextPage(){
+  if(current < pages.length-1) goTo(current+1);
+}
+
+/* keyboard nav */
+document.addEventListener('keydown',e=>{
+  if(e.key==='ArrowDown'||e.key==='ArrowRight') nextPage();
+  if(e.key==='ArrowUp'||e.key==='ArrowLeft') goTo(Math.max(0,current-1));
+});
+
+/* ── PHOTO UPLOAD ── */
+document.getElementById('photo-input').addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    const img=document.getElementById('photo-img');
+    img.src=ev.target.result;
+    img.style.display='block';
+    document.getElementById('photo-placeholder').style.display='none';
+  };
+  r.readAsDataURL(f);
+});
+
+/* ── FLOATING ROSES (PAGE 1) ── */
+const roseContainer=document.getElementById('float-roses');
+const roseSymbols=['🌹','🎁','✦','·','❀','✿','🎀','💓','💖'];
+function spawnRose(){
+  const el=document.createElement('div');
+  el.className='fr';
+  el.textContent=roseSymbols[Math.floor(Math.random()*roseSymbols.length)];
+  el.style.left=Math.random()*100+'vw';
+  el.style.fontSize=(0.7+Math.random()*1.2)+'rem';
+  const dur=10+Math.random()*14;
+  el.style.animationDuration=dur+'s';
+  el.style.animationDelay=Math.random()*6+'s';
+  roseContainer.appendChild(el);
+  setTimeout(()=>el.remove(),(dur+6)*1000);
+}
+for(let i=0;i<18;i++) spawnRose();
+setInterval(spawnRose,2200);
+
+/* ── PARTICLE CANVAS ── */
+const canvas=document.getElementById('bg-canvas');
+const ctx=canvas.getContext('2d');
+function resize(){canvas.width=innerWidth;canvas.height=innerHeight;}
+resize();window.addEventListener('resize',resize);
+
+const N=80;
+const pts=Array.from({length:N},()=>({
+  x:Math.random()*innerWidth,
+  y:Math.random()*innerHeight,
+  vx:(Math.random()-.5)*.25,
+  vy:(Math.random()-.5)*.25,
+  r:Math.random()*1.8+.4,
+  hue:Math.random()<.5?0:340,  // red or rose
+  alpha:.15+Math.random()*.3
+}));
+
+function drawParticles(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  pts.forEach(p=>{
+    p.x+=p.vx;p.y+=p.vy;
+    if(p.x<0||p.x>canvas.width)  p.vx*=-1;
+    if(p.y<0||p.y>canvas.height) p.vy*=-1;
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`hsla(${p.hue},70%,55%,${p.alpha})`;
+    ctx.fill();
+  });
+  // draw connections
+  for(let i=0;i<N;i++){
+    for(let j=i+1;j<N;j++){
+      const dx=pts[i].x-pts[j].x;
+      const dy=pts[i].y-pts[j].y;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      if(d<130){
+        ctx.beginPath();
+        ctx.strokeStyle=`rgba(192,21,42,${.06*(1-d/130)})`;
+        ctx.lineWidth=.6;
+        ctx.moveTo(pts[i].x,pts[i].y);
+        ctx.lineTo(pts[j].x,pts[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+</script>
+</body>
+</html>
